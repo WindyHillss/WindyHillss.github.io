@@ -1,3 +1,0 @@
-# WindyHillss.github.io
-
-.-.
