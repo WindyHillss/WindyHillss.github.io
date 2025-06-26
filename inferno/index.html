@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inferno</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background-color: #171819;
+      background-image: 
+        linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)),
+        url('inferno_statue.gif');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+	
+	#particle-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      bottom: 0;
+      width: 4px;
+      height: 4px;
+      background-color: rgba(23, 24, 25, 1); /* #171819 */
+      border-radius: 50%;
+      animation: rise 3s linear forwards;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-150px) scale(0.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particle-container"></div>
+
+  <script>
+    const container = document.getElementById('particle-container');
+
+    function spawnParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * window.innerWidth + 'px';
+      particle.style.animationDuration = 2 + Math.random() * 2 + 's';
+      container.appendChild(particle);
+
+      setTimeout(() => {
+        particle.remove();
+      }, 4000);
+    }
+
+    setInterval(spawnParticle, 100);
+  </script>
+</body>
+</html>
