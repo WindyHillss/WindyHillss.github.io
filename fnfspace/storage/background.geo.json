@@ -1,0 +1,84 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.background",
+				"texture_width": 512,
+				"texture_height": 256,
+				"visible_bounds_width": 57,
+				"visible_bounds_height": 17.5,
+				"visible_bounds_offset": [0, 8.25, 0]
+			},
+			"bones": [
+				{
+					"name": "all",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "wallground",
+					"parent": "all",
+					"pivot": [-32, 64, 0],
+					"cubes": [
+						{
+							"origin": [-96, 0, -128],
+							"size": [256, 0, 256],
+							"uv": {
+								"up": {"uv": [256, 0], "uv_size": [256, 256]}
+							}
+						},
+						{
+							"origin": [-96, 0, -128],
+							"size": [0, 256, 256],
+							"uv": {
+								"west": {"uv": [0, 0], "uv_size": [256, 256]}
+							}
+						}
+					]
+				},
+				{
+					"name": "wallground2",
+					"parent": "all",
+					"pivot": [-32, 64, -256],
+					"cubes": [
+						{
+							"origin": [-96, 0, -384],
+							"size": [256, 0, 256],
+							"uv": {
+								"up": {"uv": [256, 0], "uv_size": [256, 256]}
+							}
+						},
+						{
+							"origin": [-96, 0, -384],
+							"size": [0, 256, 256],
+							"uv": {
+								"west": {"uv": [0, 0], "uv_size": [256, 256]}
+							}
+						}
+					]
+				},
+				{
+					"name": "wallground3",
+					"parent": "all",
+					"pivot": [-32, 64, 256],
+					"cubes": [
+						{
+							"origin": [-96, 0, 128],
+							"size": [256, 0, 256],
+							"uv": {
+								"up": {"uv": [256, 0], "uv_size": [256, 256]}
+							}
+						},
+						{
+							"origin": [-96, 0, 128],
+							"size": [0, 256, 256],
+							"uv": {
+								"west": {"uv": [0, 0], "uv_size": [256, 256]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
