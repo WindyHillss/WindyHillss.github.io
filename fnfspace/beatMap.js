@@ -1,7 +1,4 @@
 export const beatMap = [
-{ time: 2.00, lane: 2, zoom: true },
-{ time: 3.00, lane: 1, zoom: true },
-{ time: 4.00, lane: 3, zoom: true },
 { time: 24.76, lane: 2 },
 { time: 25.02, lane: 2 },
 { time: 25.05, lane: 2 },
