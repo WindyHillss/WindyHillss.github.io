@@ -2,21 +2,18 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>Basit Sesli Sohbet - Çift Yönlü</title>
+  <title>Sesli Sohbet - Firebase ile</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="https://unpkg.com/simple-peer@9.11.1/simplepeer.min.js"></script>
 </head>
 <body>
-  <h1>Sesli Sohbet Testi</h1>
-  <button id="start">Mikrofonu Aç ve Bağlan</button>
-  <audio id="localAudio" controls autoplay muted></audio>
-  <audio id="remoteAudio" controls autoplay></audio>
-
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://unpkg.com/simple-peer@9.11.1/simplepeer.min.js"></script>
+  <h1>Sesli Sohbet Odası (Firebase ile)</h1>
 
   <script>
-    // Firebase config - kendi bilgilerinle değiştir
-    const firebaseConfig = {
+    // Firebase config, kendi projenin config bilgilerini koy
+	
+	const firebaseConfig = {
     apiKey: "AIzaSyACfKn20JKMDsHUSydz4E2xUlMqJyYuw1Q",
     authDomain: "voice-chat-40bf2.firebaseapp.com",
     databaseURL: "https://voice-chat-40bf2-default-rtdb.firebaseio.com",
@@ -30,65 +27,87 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const roomId = 'deneme-oda'; // Aynı oda ID’si
-    const signalsRef = db.ref('rooms/' + roomId + '/signals');
+    const roomId = 'odam';
+    const userId = Math.random().toString(36).substring(2, 9);
 
+    const peers = {};
     let localStream;
-    let peer;
-    let clientId = Math.random().toString(36).substr(2, 9); // Rastgele id
 
-    document.getElementById('start').onclick = async () => {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    // Kullanıcı medyasını al
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      .then(stream => {
+        localStream = stream;
 
-      // Kendi sesini çal
-      const localAudio = document.getElementById('localAudio');
-      localAudio.srcObject = localStream;
+        // Firebase'den diğer kullanıcıların signal verilerini dinle
+        const signalsRef = db.ref(`rooms/${roomId}/signals`);
 
-      // İlk sinyali beklerken peer henüz yok, önceki sinyalleri temizle
-      await signalsRef.remove();
+        signalsRef.on('child_added', snapshot => {
+          const data = snapshot.val();
 
-      // İnisiyator mu, değil mi karar verelim
-      // Oda boşsa initiator ol, değilse değil
-      signalsRef.once('value', snapshot => {
-        const hasPeers = snapshot.exists();
-        startPeer(!hasPeers); // initiator = true eğer oda boşsa
-      });
-    };
+          if (data.from === userId) return; // Kendimize gelen sinyali görmezden gel
 
-    function startPeer(isInitiator) {
-      peer = new SimplePeer({
-        initiator: isInitiator,
-        trickle: false,
-        stream: localStream,
-        config: {
-          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+          if (!peers[data.from]) {
+            // Peer alıcı taraf
+            const peer = new SimplePeer({ initiator: false, trickle: false, stream: localStream });
+            peer.on('signal', signal => {
+              sendSignal(signal, data.from);
+            });
+            peer.on('stream', remoteStream => {
+              playAudio(remoteStream);
+            });
+            peers[data.from] = peer;
+          }
+          peers[data.from].signal(data.signal);
+        });
+
+        // Firebase'e signal gönder
+        function sendSignal(signal, to) {
+          const signalRef = db.ref(`rooms/${roomId}/signals`).push();
+          signalRef.set({
+            from: userId,
+            to: to,
+            signal: signal,
+            timestamp: Date.now()
+          });
         }
+
+        // Yeni katılan kullanıcı için peer başlat
+        const usersRef = db.ref(`rooms/${roomId}/users/${userId}`);
+        usersRef.set(true);
+        usersRef.onDisconnect().remove();
+
+        // Yeni kullanıcı eklenirse peer başlat
+        const usersRoomRef = db.ref(`rooms/${roomId}/users`);
+        usersRoomRef.on('child_added', snapshot => {
+          const newUserId = snapshot.key;
+          if (newUserId === userId) return;
+
+          if (!peers[newUserId]) {
+            const peer = new SimplePeer({ initiator: true, trickle: false, stream: localStream });
+            peer.on('signal', signal => {
+              sendSignal(signal, newUserId);
+            });
+            peer.on('stream', remoteStream => {
+              playAudio(remoteStream);
+            });
+            peers[newUserId] = peer;
+          }
+        });
+
+        // Ses oynatma fonksiyonu
+        function playAudio(remoteStream) {
+          const audio = document.createElement('audio');
+          audio.srcObject = remoteStream;
+          audio.autoplay = true;
+          audio.play();
+          document.body.appendChild(audio);
+        }
+
+      })
+      .catch(err => {
+        console.error('Mikrofon erişimi reddedildi:', err);
       });
 
-      peer.on('signal', data => {
-        // Firebase’e sinyal gönder, kendi ID ile
-        signalsRef.push({ from: clientId, signal: data });
-      });
-
-      peer.on('stream', stream => {
-        // Uzak sesi çal
-        const remoteAudio = document.getElementById('remoteAudio');
-        remoteAudio.srcObject = stream;
-      });
-
-      // Firebase’den gelen sinyalleri dinle
-      signalsRef.on('child_added', snapshot => {
-  const msg = snapshot.val();
-  if (msg.from !== clientId && peer && !peer.destroyed) {
-    try {
-      peer.signal(msg.signal);
-    } catch (e) {
-      console.error('Signal hatası:', e);
-    }
-  }
-});
-
-    }
   </script>
 </body>
 </html>
