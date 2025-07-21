@@ -41,35 +41,40 @@
         // Firebase'den diğer kullanıcıların signal verilerini dinle
         const signalsRef = db.ref(`rooms/${roomId}/signals`);
 
-        signalsRef.on('child_added', snapshot => {
-          const data = snapshot.val();
+// Signal dinle ve sadece bana gelenleri işle
+signalsRef.on('child_added', snapshot => {
+  const data = snapshot.val();
 
-          if (data.from === userId) return; // Kendimize gelen sinyali görmezden gel
+  if (data.to !== userId) return; // Sadece bana gelen mesajları işle
 
-          if (!peers[data.from]) {
-            // Peer alıcı taraf
-            const peer = new SimplePeer({ initiator: false, trickle: false, stream: localStream });
-            peer.on('signal', signal => {
-              sendSignal(signal, data.from);
-            });
-            peer.on('stream', remoteStream => {
-              playAudio(remoteStream);
-            });
-            peers[data.from] = peer;
-          }
-          peers[data.from].signal(data.signal);
-        });
+  if (!peers[data.from]) {
+    const peer = new SimplePeer({ initiator: false, trickle: false, stream: localStream });
+    peer.on('signal', signal => {
+      sendSignal(signal, data.from);
+    });
+    peer.on('stream', remoteStream => {
+      playAudio(remoteStream);
+    });
+    peers[data.from] = peer;
+  }
 
-        // Firebase'e signal gönder
-        function sendSignal(signal, to) {
-          const signalRef = db.ref(`rooms/${roomId}/signals`).push();
-          signalRef.set({
-            from: userId,
-            to: to,
-            signal: signal,
-            timestamp: Date.now()
-          });
-        }
+  peers[data.from].signal(data.signal);
+
+  // İşlenen sinyali Firebase’den sil
+  snapshot.ref.remove();
+});
+
+// Signal gönderme fonksiyonu
+function sendSignal(signal, to) {
+  const signalRef = db.ref(`rooms/${roomId}/signals`).push();
+  signalRef.set({
+    from: userId,
+    to: to,
+    signal: signal,
+    timestamp: Date.now()
+  });
+}
+
 
         // Yeni katılan kullanıcı için peer başlat
         const usersRef = db.ref(`rooms/${roomId}/users/${userId}`);
