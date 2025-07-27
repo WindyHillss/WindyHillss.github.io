@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scores</title>
+</head>
+<body>
+  <h1>Scores</h1>
+  <ul id="score-list"></ul>
+
+  <!-- Firebase -->
+  <!-- Firebase 8.x CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+	const firebaseConfig = {
+	  apiKey: "AIzaSyCDmpY5wtpOkCw6gp2yo9q7g-4SW6RDbMk",
+	  authDomain: "storage-3717f.firebaseapp.com",
+	  databaseURL: "https://storage-3717f-default-rtdb.firebaseio.com/",  // <<< BUNU EKLE!
+	  projectId: "storage-3717f",
+	  storageBucket: "storage-3717f.firebasestorage.app",
+	  messagingSenderId: "495111306176",
+	  appId: "1:495111306176:web:d373109612e1450f922625"
+	};
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function loadScores() {
+	  const scoresRef = database.ref('scores').orderByChild('score').limitToLast(50);
+	  scoresRef.once('value', (snapshot) => {
+	  const scores = [];
+	    snapshot.forEach((child) => {
+        scores.push(child.val());
+      });
+      scores.sort((a, b) => b.score - a.score);
+
+      const list = document.getElementById('score-list');
+      list.innerHTML = '';
+	  scores.forEach((s, i) => {
+		const li = document.createElement('li');
+		li.textContent = `${i + 1}. ${s.name} — Score: ${s.score} — Miss: ${s.miss ?? 0}`;
+		list.appendChild(li);
+		});
+	  });
+	}
+
+    loadScores();
+  </script>
+</body>
+</html>
