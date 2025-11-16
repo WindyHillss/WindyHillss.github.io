@@ -1,6 +1,12 @@
 const style = document.createElement("style");
 
 style.textContent = `
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     margin: 0;
     height: 100vh;
@@ -32,7 +38,6 @@ style.textContent = `
 
   .title-bar {
     background-color: #222526;
-	font-family: 'Poppins', sans-serif;
     padding: 5px 10px;
     display: flex;
     justify-content: space-between;
@@ -112,7 +117,7 @@ style.textContent = `
     color: #888;
     font-family: 'Poppins', sans-serif;
     opacity: 0.6;
-    z-index: 5;
+    z-index: 1;
     user-select: none;
   }
   
@@ -124,7 +129,7 @@ style.textContent = `
     color: #888;
     font-family: 'Poppins', sans-serif;
     opacity: 0.6;
-    z-index: 5;
+    z-index: 1;
     user-select: none;
   }
   
@@ -321,9 +326,17 @@ const campfireAudio = new Audio("campfire.mp3");
 campfireAudio.loop = true;
 campfireAudio.volume = 1;
 
-window.addEventListener("click", () => {
-  campfireAudio.play().catch(e => console.log("Autoplay error"));
-}, { once: true });
+let campfireStarted = false;
+
+function startCampfireAudio() {
+  if (!campfireStarted) {
+    campfireAudio.play().catch(e => console.log("Autoplay error"));
+    campfireStarted = true;
+  }
+}
+
+window.addEventListener("click", startCampfireAudio, { once: true });
+window.addEventListener("keydown", startCampfireAudio, { once: true });
 
 // Leaf system
 const leafImage = new Image();
@@ -422,3 +435,103 @@ avatarDecoration.src = `profile_decoration.gif`;
 loadStatus();
 setInterval(loadStatus, 5000);
 
+// Sürükleme Sistemi
+const profileCard = document.querySelector('.profile-card');
+const titleBar = profileCard.querySelector('.title-bar');
+
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+// Başlangıçta ortala ve position: fixed yap
+profileCard.style.position = 'fixed';
+profileCard.style.left = `${(window.innerWidth - profileCard.offsetWidth) / 2}px`;
+profileCard.style.top = `${(window.innerHeight - profileCard.offsetHeight) / 2}px`;
+profileCard.style.margin = '0';
+
+titleBar.addEventListener('mousedown', function(e) {
+  isDragging = true;
+  dragOffsetX = e.clientX - profileCard.offsetLeft;
+  dragOffsetY = e.clientY - profileCard.offsetTop;
+  document.body.style.userSelect = 'none';
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (isDragging) {
+    let newX = e.clientX - dragOffsetX;
+    let newY = e.clientY - dragOffsetY;
+
+    // Kartı ekran dışına çıkmasın diye sınırla
+    newX = Math.max(0, Math.min(newX, window.innerWidth - profileCard.offsetWidth));
+    newY = Math.max(0, Math.min(newY, window.innerHeight - profileCard.offsetHeight));
+
+    profileCard.style.left = `${newX}px`;
+    profileCard.style.top = `${newY}px`;
+  }
+});
+
+document.addEventListener('mouseup', function() {
+  if (isDragging) {
+    isDragging = false;
+    document.body.style.userSelect = '';
+  }
+});
+
+/// ----------------------------------------------------------
+
+let easterSeq = "";
+const triggerWord = "gwen";
+
+window.addEventListener('keydown', function(e) {
+  easterSeq += e.key.toLowerCase();
+  if (easterSeq.length > triggerWord.length) {
+    easterSeq = easterSeq.slice(-triggerWord.length);
+  }
+  if (easterSeq === triggerWord) {
+    triggerGwenEasterEgg();
+    easterSeq = "";
+  }
+});
+
+function triggerGwenEasterEgg() {
+  if (typeof animateLeaves === 'function' && animateLeaves.frameId) {
+    cancelAnimationFrame(animateLeaves.frameId);
+  }
+
+  const canvases = document.querySelectorAll('canvas');
+  canvases.forEach(canvas => canvas.remove());
+  
+  if (window.leaves) leaves.length = 0;
+
+  if (window.campfireAudio && typeof window.campfireAudio.pause === 'function') {
+    window.campfireAudio.pause();
+    window.campfireAudio.currentTime = 0;
+    window.campfireAudio.volume = 0;
+  }
+
+  console.log("Easteregg burned!");
+
+  if (!document.getElementById('bg-video-gwen')) {
+    const bgVideo = document.createElement("video");
+    bgVideo.id = "bg-video-gwen";
+    bgVideo.src = "wp.mp4";
+    bgVideo.autoplay = true;
+    bgVideo.loop = true;
+    bgVideo.muted = false;
+    bgVideo.playsInline = true;
+    bgVideo.style.position = "fixed";
+    bgVideo.style.left = "0";
+    bgVideo.style.top = "0";
+    bgVideo.style.width = "100%";
+    bgVideo.style.height = "100%";
+    bgVideo.style.objectFit = "cover";
+    bgVideo.style.zIndex = "-2";
+    bgVideo.style.pointerEvents = "none";
+    bgVideo.style.margin = "0";
+    bgVideo.style.padding = "0";
+    bgVideo.style.border = "none";
+    document.body.appendChild(bgVideo);
+    bgVideo.volume = 1;
+    bgVideo.play().catch(()=>{});
+  }
+}
