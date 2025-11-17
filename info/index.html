@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile and Article</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #000; /* Black background */
+        color: #fff; /* All text white */
+    }
+
+    .container {
+        width: 90%;
+        max-width: 900px;
+        margin: 20px auto;
+        background-color: #111; /* Slightly lighter black box */
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        border-radius: 8px;
+    }
+
+    .profile-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #555;
+        padding-bottom: 20px;
+    }
+
+    .profile-image-wrapper {
+        position: relative;
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+		pointer-events: none;
+    }
+
+    .profile-decoration {
+        position: absolute;
+        top: -9px;
+        left: -9px;
+        width: 118px;
+        height: 118px;
+        pointer-events: none;
+    }
+
+    .profile-info h2 {
+        margin: 0 0 10px;
+        color: #fff;
+    }
+
+    .profile-info p {
+        margin: 5px 0;
+		font-size: 14px;
+        color: #ccc;
+    }
+
+    .social-links a {
+        margin-right: 10px;
+        text-decoration: none;
+        color: #1da1f2; /* Light blue link color */
+    }
+
+    .article {
+        margin-top: 20px;
+    }
+
+    .article h2 {
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .article p {
+        line-height: 1.6;
+        margin-bottom: 10px;
+        color: #ccc;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Profile Card -->
+    <div class="profile-card">
+        <div class="profile-image-wrapper">
+            <img class="profile-pic" src="profile.png" alt="Profile Picture">
+            <img class="profile-decoration" src="profile_decoration.gif" alt="Decoration">
+        </div>
+        <div class="profile-info">
+            <h2>WindyHills</h2>
+            <p>I’m not very skilled at coding, but I enjoy programming in my free time. JavaScript is my primary coding language.</p>
+            <div class="social-links">
+                <a href="#">Twitter</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+<!-- Article Section -->
+<div class="article">
+    <h2>Profile Card</h2>
+    <p>
+        This profile card showcases Discord statuses such as active, online, or offline, along with the user's profile picture. The data is fetched in real-time from <code>https://api.lanyard.rest/</code>. 
+        The card is designed to resemble a Windows-style window and can be freely dragged around the screen by holding the top title bar.
+    </p>
+    <p>
+        The bottom area of the card provides space for custom links, with subtle hover effects for better interactivity. Additionally, the card content can be used as a link to navigate directly to the radio site.
+    </p>
+    <p>
+        To create a visually immersive experience, a leaf animation script harmonizes with the background image, and a campfire sound adds ambiance. The sound only plays after user interaction to comply with browser autoplay policies.
+    </p>
+    <p>
+        Social media links such as Pinterest, Discord, and Spotify are included within the card, each with hover effects to indicate interactivity.
+    </p>
+    <p>
+        At the bottom-left of the site, author and copyright information is displayed, while the bottom-right provides attribution for the background image with a clickable link.
+    </p>
+    <p>
+        The site also includes an Easter Egg: typing a secret keyword ("gwen") triggers a dynamic video background, enhancing the interactivity and surprise element of the site.
+    </p>
+    <p>
+        Overall, this site is designed to inform users while providing a rich interactive experience combining live data, animations, sound effects, and playful hidden features.
+    </p>
+</div>
+
+<!-- Article Section 2 -->
+<div class="article">
+    <h2>Radio</h2>
+    <p>
+        This interactive radio box allows users to listen to a live streaming radio station directly from the site. 
+        The currently playing station is displayed with a clickable link to access it in a new tab.
+    </p>
+    <p>
+        Users can also download the radio player application directly via the provided download link. 
+        The audio will only start playing after user interaction, in compliance with browser autoplay policies.
+    </p>
+    <p>
+        The radio box includes a volume slider for real-time adjustment and a duration timer that shows how long the user has been listening.
+    </p>
+    <p>
+        The box mimics a Windows-style window, with draggable functionality. Users can move the radio box anywhere on the screen by holding the title bar at the top.
+    </p>
+    <p>
+        Additionally, a background leaf animation runs behind the interface, creating a visually immersive experience that complements the site's overall aesthetic.
+    </p>
+</div>
+
+<!-- Article Section 3 -->
+<div class="article">
+    <h2>Radio.exe</h2>
+    <p>
+        The size of the Radio application (109MB) is due to it being written in C# and including .NET frameworks and necessary packages, which naturally take up significant storage space.
+    </p>
+    <p>
+        The Radio.exe application streams the same radio station as the website URL, ensuring no difference in playback or delay.
+    </p>
+    <p>
+        Radio.exe does not contain any malicious commands or directories. If you are curious about the contents of the executable, you can contact me via Discord: 
+        <a href="https://discord.com/users/607103362558722060" target="_blank" rel="noopener noreferrer" style="color:#1da1f2;">Discord</a>.
+    </p>
+    <p>
+        The application features a minimal Windows-style interface, including draggable title bars, a system tray icon, and Discord Rich Presence integration. It allows users to play or stop the radio, and all functions mirror the live web radio experience.
+    </p>
+    <p>
+        The buttons in the Radio interface are perfectly positioned to blend with the background. If you had any trouble locating them, sorry about that! :)
+    </p>
+</div>
+
+</div>
+
+</body>
+</html>
