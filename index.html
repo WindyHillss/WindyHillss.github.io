@@ -18,6 +18,53 @@
       font-family: "Geist", sans-serif;
     }
 
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #03142c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease;
+    }
+
+    #loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #loading-screen img {
+      width: 64px;
+      height: 64px;
+    }
+
+    .loading-text {
+      margin-top: 14px;
+      color: rgba(255,255,255,0.3);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .loading-bar-track {
+      margin-top: 12px;
+      width: 120px;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: #caeffc;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
     canvas {
       display: block;
     }
@@ -179,10 +226,10 @@
     }
 
     .about {
-      margin-top: 14px;
-      padding-top: 12px;
+      margin-top: 0px;
+      padding-top: 0px;
 	  margin-left: 4px;
-      border-top: 1px solid rgba(255, 255, 255, .08);
+      border-top: none;
       color: rgba(255, 255, 255, .75);
       font-size: 11px;
       opacity: 0;
@@ -193,6 +240,53 @@
     .profile-card:hover .about {
       opacity: 1;
       transform: none;
+    }
+
+    .music-bar {
+      width: 100%;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .music-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: #caeffc;
+      border-radius: 2px;
+      transition: width 0.2s linear;
+    }
+
+    .music-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .music-row .music-bar {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .mute-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: rgba(255,255,255,0.35);
+      font-size: 13px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .mute-btn:hover {
+      color: rgba(255,255,255,0.7);
     }
 	
     .actions {
@@ -284,10 +378,18 @@
       .action-btn { max-width: 30%; }
     }
   </style>
-  <script type="module" crossorigin src="/assets/index-vpF6dqNo.js"></script>
+  <script type="module" crossorigin src="/assets/index-DJ3Kxt2h.js"></script>
 </head>
 
 <body>
+  <div id="loading-screen">
+    <img src="/loading.png" alt="loading" />
+    <div class="loading-text">loading</div>
+    <div class="loading-bar-track">
+      <div id="loading-bar-fill" class="loading-bar-fill"></div>
+    </div>
+  </div>
+
   <div class="profile-wrapper">
     <div class="profile-card">
       <div class="profile-main">
@@ -303,12 +405,18 @@
 
           <div class="stats">
             <span>Lv.82</span>
-            <span>1248 Maps</span>
+            <span>Uhhhhhhh</span>
           </div>
         </div>
       </div>
 
       <div class="about">
+        <div class="music-row">
+          <button id="mute-btn" class="mute-btn">♪</button>
+          <div class="music-bar">
+            <div id="music-bar-fill" class="music-bar-fill"></div>
+          </div>
+        </div>
         Indie developer.<br />
         Anddd couldn't think of anything to write here. (Again)
       </div>
